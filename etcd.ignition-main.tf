@@ -1,21 +1,6 @@
 
 /*
  | --
- | -- Run a bash script which only contains a curl command to retrieve
- | -- the etcd discovery url from the service offered by CoreOS.
- | -- This is how to retrieve the URL from any command line.
- | --
- | --     $ curl https://discovery.etcd.io/new?size=3
- | --
-*/
-data external url
-{
-    program = [ "python", "${path.module}/etcd-discovery-url.py", "${ var.in_node_count }" ]
-}
-
-
-/*
- | --
  | -- Visit the terraform ignition user manual at the url below to
  | -- understand how ignition is used as the de-factor cloud-init
  | -- starter for a cluster of CoreOS machines.
@@ -68,4 +53,19 @@ data template_file service
     {
         file_discovery_url = "${ data.external.url.result[ "etcd_discovery_url" ] }"
     }
+}
+
+
+/*
+ | --
+ | -- Run a bash script which only contains a curl command to retrieve
+ | -- the etcd discovery url from the service offered by CoreOS.
+ | -- This is how to retrieve the URL from any command line.
+ | --
+ | --     $ curl https://discovery.etcd.io/new?size=3
+ | --
+*/
+data external url
+{
+    program = [ "python", "${path.module}/etcd-discovery-url.py", "${ var.in_node_count }" ]
 }
