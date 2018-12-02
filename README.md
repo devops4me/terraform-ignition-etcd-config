@@ -5,6 +5,26 @@ This module **converts human manageable systemd unit files** into **machine read
 
 ---
 
+### etcd systemd unit file
+
+```ini
+[Unit]
+Description=Sets up the inbuilt CoreOS etcd 3 key value store
+Requires=coreos-metadata.service
+After=coreos-metadata.service
+
+[Service]
+EnvironmentFile=/run/metadata/coreos
+ExecStart=/usr/lib/coreos/etcd-wrapper $ETCD_OPTS \
+  --listen-peer-urls="http://$${COREOS_EC2_IPV4_LOCAL}:2380" \
+  --listen-client-urls="http://0.0.0.0:2379" \
+  --initial-advertise-peer-urls="http://$${COREOS_EC2_IPV4_LOCAL}:2380" \
+  --advertise-client-urls="http://$${COREOS_EC2_IPV4_LOCAL}:2379" \
+  --discovery="${file_discovery_url}"
+```
+
+---
+
 ## Architectural Placement
 
 Academically this module belongs in the innermost layer of a cluster and is the only layer that knows which services the cluster profers. This layer is responsible for telling
@@ -29,24 +49,6 @@ There are **no Terraform resource statements** in this module and you'd expect t
 ## Ignition User Data Input Example
 
 Ignition config is in JSON format and is not designed to be human readable. This example demonstrates how the terraform ignition provider reads the systemd unit files and then **transpiles it** to the JSON code below which is passed into the **user data input variable** in this module.
-
-### The SystemD Unit File
-
-```ini
-[Unit]
-Description=Sets up the inbuilt CoreOS etcd 3 key value store
-Requires=coreos-metadata.service
-After=coreos-metadata.service
-
-[Service]
-EnvironmentFile=/run/metadata/coreos
-ExecStart=/usr/lib/coreos/etcd-wrapper $ETCD_OPTS \
-  --listen-peer-urls="http://$${COREOS_EC2_IPV4_LOCAL}:2380" \
-  --listen-client-urls="http://0.0.0.0:2379" \
-  --initial-advertise-peer-urls="http://$${COREOS_EC2_IPV4_LOCAL}:2380" \
-  --advertise-client-urls="http://$${COREOS_EC2_IPV4_LOCAL}:2379" \
-  --discovery="${file_discovery_url}"
-```
 
 ### The Transpiled Ignition Configuration
 
