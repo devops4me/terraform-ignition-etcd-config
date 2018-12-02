@@ -40,6 +40,23 @@ There are **no Terraform resource statements** in this module and you'd expect t
 
 ## Usage
 
+Copy this into a file and then run **`terraform init`** and **`terraform apply -auto-approve`** and out comes the ignition config.
+
+```hcl
+module etcd-ignition-config
+{
+    source        = "github.com/devops4me/terraform-ignition-etcd-config"
+    in_node_count = 6
+}
+
+output etcd_ignition_config
+{
+    value = "${ module.etcd-ignition-config.out_ignition_config }"
+}
+```
+
+Your node is configured when you feed the output into the user data field of either an EC2 instance (**[fixed size cluster](https://github.com/devops4me/terraform-aws-ec2-cluster-fixed-size)**) or a launch configuration (**[auto-scaling cluster](https://github.com/devops4me/terraform-aws-ec2-cluster-auto-scale)**).
+
 ## Module Inputs
 
 ## Module Outputs
@@ -90,8 +107,40 @@ Ignition config is in JSON format and is not designed to be human readable. This
 ```
 
 
-
 ---
+
+## 0 Resources is Expected
+
+Seeing **zero resources can be slightly concerning** until we remember that this module solely provides node services configuration. It is **completely separate** both from infrastructure and network components.
+
+    data.external.url: Refreshing state...
+    data.external.url: Refreshing state...
+    data.template_file.service: Refreshing state...
+    data.ignition_systemd_unit.etcd3: Refreshing state...
+    data.ignition_config.etcd3: Refreshing state...
+    data.template_file.service: Refreshing state...
+    data.ignition_systemd_unit.etcd3: Refreshing state...
+    data.ignition_config.etcd3: Refreshing state...
+
+    Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+
+
+## Terraform Ignition Provider
+
+This module is not named **`terraform-aws-...`** because it does not use the AWS provider. Thankfully **no IAM user credentials** need to be provided.
+
+Terraform tells you that it is using
+
+- the **external provider** to run the etcd cluster discovery url script
+- the **ignition provider** to convert the service unit files to ignition json config and
+- the **template provider** to read the unit file and perform the variable interpolation
+
+```
+* provider.external: version = "~> 1.0"
+* provider.ignition: version = "~> 1.0"
+* provider.template: version = "~> 1.0"
+```
+
 ---
 
 Okay - new readme
