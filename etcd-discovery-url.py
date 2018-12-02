@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-# ## #################################################################### ## #
-# ## devops4me.etcd3-cluster/etcd-discovery-url.py                       ## #
-# ## #################################################################### ## #
+# -----------------------------------------------------------------------------------------------
+# https://github.com/devops4me/terraform-ignition-etcd-config/blob/master/etcd-discovery-url.py
+# -----------------------------------------------------------------------------------------------
 #
 # Here are the important items to note before running or
 # when trouble-shooting this script.
@@ -24,29 +24,11 @@
 #
 #  [6] - output is a JSON formatted string with key "etcd_discovery_url"
 #
-#  [7] - Logs are printed to file [etcd-discovery-url.log] in the same folder.
-#
-#  [8] - Example Command and Output
+#  [7] - Example Command and Output
 #
 #          $ ./etcd-discovery-url.py 3
 #          {"etcd_discovery_url": "https://discovery.etcd.io/a660b68aa151605f0ed32807b4be165f"}
-#
-# ## #################################################################### ## #
 
-# Example Output
-# {"ip_addresses": "10.42.1.230,10.42.1.39,10.42.1.139,10.42.0.108"}
-
-import requests, json, sys, logging
-
-logging.basicConfig( filename = 'etcd-discovery-url.log', level = logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%Y%m%d %I:%M:%S %p' )
-
-logging.info( '[etcd-discovery-url.py] invoking script to grab an etcd discovery url.' )
-logging.info( 'The stated node count in the etcd cluster is [%s]' % ( sys.argv[1] ) )
-
-payload = { 'size': sys.argv[1] }
-response = requests.get( 'https://discovery.etcd.io/new', params=payload )
-
-logging.info( 'The etcd discovery url retrieved is [%s]' % ( response.text ) )
-
-OUTPUT_VARIABLE_NAME = "etcd_discovery_url"
-print json.dumps( { OUTPUT_VARIABLE_NAME : response.text } )
+import requests, json, sys
+response = requests.get( 'https://discovery.etcd.io/new', params={ 'size' : sys.argv[1] } )
+print json.dumps( { "etcd_discovery_url" : response.text } )

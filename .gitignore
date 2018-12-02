@@ -11,6 +11,3 @@
 
 # When terraform crashes it can leave this file behind.
 crash.log
-
-# no need to check in the python etcd discovery url log
-etcd-discovery-url.log
