@@ -1,13 +1,6 @@
 
 pipeline
 {
-    environment
-    {
-        AWS_ACCESS_KEY_ID     = credentials( 'safe.aws.access.key' )
-        AWS_SECRET_ACCESS_KEY = credentials( 'safe.aws.secret.key' )
-        AWS_REGION            = credentials( 'safe.aws.region.key' )
-    }
-
     agent { dockerfile true }
 
     stages
