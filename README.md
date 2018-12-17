@@ -55,7 +55,7 @@ output etcd_ignition_config
 }
 ```
 
-Your node is configured when you feed the output into the user data field of either an EC2 instance (**[fixed size cluster](https://github.com/devops4me/terraform-aws-ec2-cluster-fixed-size)**) or a launch configuration (**[auto-scaling cluster](https://github.com/devops4me/terraform-aws-ec2-cluster-auto-scale)**).
+Your node is configured when you feed the output into the user data field of either an EC2 instance (**[fixed size cluster](https://github.com/devops4me/terraform-aws-ec2-instance-cluster)**) or a launch configuration (**[auto-scaling cluster](https://github.com/devops4me/terraform-aws-ec2-cluster-auto-scale)**).
 
 ## Module Inputs
 
